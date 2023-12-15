@@ -1,15 +1,21 @@
 mods.DashToggleHelper.name=Dash Toggle Helper
 
 # Dash Toggle Block
-entities.DashToggleHelper/DashToggleBlock.placements.name.zeroDashes=Dash Toggle Block (Blue, 0 Dashes)
-entities.DashToggleHelper/DashToggleBlock.placements.name.oneDash=Dash Toggle Block (Red, 1 Dash)
-entities.DashToggleHelper/DashToggleBlock.placements.name.twoDashes=Dash Toggle Block (Pink, 2 Dashes)
+entities.DashToggleHelper/DashToggleBlock.placements.name.0dash=Dash Toggle Block (Blue, 0 Dashes)
+entities.DashToggleHelper/DashToggleBlock.placements.name.1dash=Dash Toggle Block (Red, 1 Dash)
+entities.DashToggleHelper/DashToggleBlock.placements.name.2dash=Dash Toggle Block (Pink, 2 Dashes)
+entities.DashToggleHelper/DashToggleBlock.placements.name.3dash=Dash Toggle Block (3 Dashes)
+entities.DashToggleHelper/DashToggleBlock.placements.name.4dash=Dash Toggle Block (4 Dashes)
+entities.DashToggleHelper/DashToggleBlock.placements.name.5dash=Dash Toggle Block (5 Dashes)
 
 entities.DashToggleHelper/DashToggleBlock.attributes.description.dashes=How many dashes Madeline needs to collide with this block
 
 # Dash Toggle Static Spinner
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.zeroDashes=Dash Toggle Static Spinner (Blue, 0 Dashes)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.oneDash=Dash Toggle Static Spinner (Red, 1 Dash)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.twoDashes=Dash Toggle Static Spinner (Pink, 2 Dashes)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.0dash=Dash Toggle Static Spinner (Blue, 0 Dashes)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.1dash=Dash Toggle Static Spinner (Red, 1 Dash)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.2dash=Dash Toggle Static Spinner (Pink, 2 Dashes)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.3dash=Dash Toggle Static Spinner (3 Dashes)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.4dash=Dash Toggle Static Spinner (4 Dashes)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.5dash=Dash Toggle Static Spinner (5 Dashes)
 
 entities.DashToggleHelper/DashToggleStaticSpinner.attributes.description.dashes=How many dashes Madeline needs to collide with this spinner

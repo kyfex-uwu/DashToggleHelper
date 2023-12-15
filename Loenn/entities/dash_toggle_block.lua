@@ -1,58 +1,32 @@
 local utils = require("utils")
 local drawableSprite = require("structs.drawable_sprite")
 local connectedEntities = require("helpers.connected_entities")
+local mods = require("mods")
+local DTLib = mods.requireFromPlugin("libraries.dash_toggle_library")
 
 local dashToggleBlock = {
     name="DashToggleHelper/DashToggleBlock",
     minimumSize = {16,16},
     fieldInformation={
         dashes = {
-            options = {"0","1","2"}
+            options = DTLib.getDashProp()
         }
     },
-    placements={
-        {
-            name="zeroDashes",
-            data = {
-                dashes="0",
-                width = 16,
-                height = 16
-            }
-        },
-        {
-            name="oneDash",
-            data = {
-                dashes="1",
-                width = 16,
-                height = 16
-            }
-        },
-        {
-            name="twoDashes",
-            data = {
-                dashes="2",
-                width = 16,
-                height = 16
-            }
-        }
-    }
+    placements={}
 }
+for i=0,DTLib.maxDashes-1,1 do
+    table.insert(dashToggleBlock.placements, {
+        name = i.."dash",
+        data = {
+            dashes=i.."",
+            width = 16,
+            height = 16
+        }
+    })
+end
 
 local texture = "objects/DashToggleHelper/dashtoggleblock/Active"
-local colors = {
-    {68, 183, 255},
-    {172, 50, 50},
-    {255, 109, 239},
-    {0, 128, 0},
-    {255, 255, 0},
-    {255, 0, 255}
-}
-for i=1, #colors, 1 do
-    for j=1, 3, 1 do
-        colors[i][j]=colors[i][j]/255
-    end
-    colors[i][4]=1
-end
+
 
 local function getSearchPredicate(entity)
     return function(target)
@@ -121,7 +95,7 @@ local function getTileSprite(entity, x, y, rectangles)
 
         sprite:addPosition(drawX, drawY)
         sprite:useRelativeQuad(quadX, quadY, 8, 8)
-        sprite:setColor(colors[entity.dashes + 1] or colors[1])
+        sprite:setColor(DTLib.getColor(entity.dashes))
 
         sprite.depth = -10
 

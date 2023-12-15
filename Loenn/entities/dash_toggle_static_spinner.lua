@@ -1,52 +1,25 @@
 local drawableSprite = require("structs.drawable_sprite")
-local enums = require("consts.celeste_enums")
 local utils = require("utils")
+local mods = require("mods")
+local DTLib = mods.requireFromPlugin("libraries.dash_toggle_library")
 
 local spinner = {
     name="DashToggleHelper/DashToggleStaticSpinner",
     fieldInformation = {
         dashes = {
-            options = {"0","1","2"}
+            options = DTLib.getDashProp()
         }
     },
-    placements = {
-        {
-            name = "zeroDashes",
-            data = {
-                dashes="0",
-                attachToSolid = false
-            }
-        },
-        {
-            name = "oneDash",
-            data = {
-                dashes="1",
-                attachToSolid = false
-            }
-        },
-        {
-            name = "twoDashes",
-            data = {
-                dashes="2",
-                attachToSolid = false
-            }
-        },
-    }
+    placements = {}
 }
-local colors = {
-    {68, 183, 255},
-    {172, 50, 50},
-    {255, 109, 239},
-    {0, 128, 0},
-    {255, 255, 0},
-    {255, 0, 255}
-}
-for i=1, #colors, 1 do
-    for j=1, 3, 1 do
-        colors[i][j]=colors[i][j]/255
-        colors[i][j]=colors[i][j]
-    end
-    colors[i][4]=1
+for i=0,DTLib.maxDashes-1,1 do
+    table.insert(spinner.placements, {
+        name = i.."dash",
+        data = {
+            dashes=i.."",
+            attachToSolid = false
+        }
+    })
 end
 
 local function getSpinnerTexture(entity, foreground)
@@ -58,7 +31,7 @@ end
 local function getSpinnerSprite(entity, foreground)
     texture = getSpinnerTexture(entity, foreground)
     local toReturn = drawableSprite.fromTexture(texture, {x=entity.x, y=entity.y})
-    toReturn:setColor(colors[entity.dashes + 1] or colors[1])
+    toReturn:setColor(DTLib.getColor(entity.dashes))
     return toReturn
 end
 
