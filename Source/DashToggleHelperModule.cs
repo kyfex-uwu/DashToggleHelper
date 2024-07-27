@@ -89,43 +89,47 @@ public class DashToggleHelperModule : EverestModule
 		}
 	}
 
+	private static object CSO_func1(CrystalStaticSpinner spinner) {
+        if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
+        return DynamicData.For(spinner).Get<CrystalColor>("color");
+    }
+    private static object CSO_func2(CrystalStaticSpinner spinner) {
+        if (spinner is DashToggleStaticSpinner) return getColor(((DashToggleStaticSpinner)spinner).Dashes);
+        return Color.White;
+    }
     private void CreateSpritesOverride(ILContext il) {
 		var cursor = new ILCursor(il);
 
 		cursor.GotoNext(MoveType.Before, instr => instr.MatchLdfld<CrystalStaticSpinner>("color"));
 		cursor.Remove();
-		cursor.EmitDelegate((CrystalStaticSpinner spinner) => {
-            if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
-            return DynamicData.For(spinner).Get<CrystalColor>("color");
-        });
+		cursor.EmitDelegate(CSO_func1);
 
 		cursor.GotoNext(MoveType.Before, instr => instr.MatchCall<Color>("get_White"));
 		cursor.Remove();
 		cursor.Emit(OpCodes.Ldarg_0);
-		cursor.EmitDelegate((CrystalStaticSpinner spinner) => {
-			if (spinner is DashToggleStaticSpinner) return getColor(((DashToggleStaticSpinner)spinner).Dashes);
-			return Color.White;
-        });
+		cursor.EmitDelegate(CSO_func2);
     }
-	private void AddSpriteOverride(ILContext il) {
+    private static object ASO_func1(CrystalStaticSpinner spinner) {
+        if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
+        return DynamicData.For(spinner).Get<CrystalColor>("color");
+    }
+    private static void ASO_func2(CrystalStaticSpinner spinner, Image image) {
+        if (spinner is DashToggleStaticSpinner) {
+            image.Color = getColor((spinner as DashToggleStaticSpinner).Dashes);
+        }
+    }
+    private void AddSpriteOverride(ILContext il) {
         var cursor = new ILCursor(il);
 
         cursor.GotoNext(MoveType.Before, instr => instr.MatchLdfld<CrystalStaticSpinner>("color"));
         cursor.Remove();
-        cursor.EmitDelegate((CrystalStaticSpinner spinner) => {
-            if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
-            return DynamicData.For(spinner).Get<CrystalColor>("color");
-        });
+        cursor.EmitDelegate(ASO_func1);
 
         cursor.GotoNext(MoveType.Before, instr => instr.MatchLdarg(0),
 			instr => instr.MatchLdfld<CrystalStaticSpinner>("filler"));
         cursor.Emit(OpCodes.Ldarg_0);
         cursor.Emit(OpCodes.Ldloc_1);
-        cursor.EmitDelegate((CrystalStaticSpinner spinner, Image image) => {
-            if (spinner is DashToggleStaticSpinner) {
-				image.Color = getColor((spinner as DashToggleStaticSpinner).Dashes);
-			}
-        });
+        cursor.EmitDelegate(ASO_func2);
     }
     private void CreateOffSprites(On.Celeste.CrystalStaticSpinner.orig_CreateSprites orig, CrystalStaticSpinner self) {
 		var expanded = self is DashToggleStaticSpinner ? DynamicData.For(self).Get<bool>("expanded") : true;
@@ -168,4 +172,3 @@ public class DashToggleHelperModule : EverestModule
         On.Celeste.Level.UpdateTime -= CheckDashUpdate;
     }
 }
-//ppga
