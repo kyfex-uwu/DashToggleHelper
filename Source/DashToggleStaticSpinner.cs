@@ -12,6 +12,7 @@ using Image = Monocle.Image;
 class DashToggleStaticSpinner : CrystalStaticSpinner {
     public readonly int Dashes;
     private DynamicData parentData;
+
     public DashToggleStaticSpinner(Vector2 position, bool attachToSolid, int dashes, int id) :
         base(position, attachToSolid, CrystalColor.Purple) {
         this.Dashes = dashes;

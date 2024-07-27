@@ -89,11 +89,11 @@ public class DashToggleHelperModule : EverestModule
 		}
 	}
 
-	private static object CSO_func1(CrystalStaticSpinner spinner) {
+	private static CrystalColor CSO_func1(CrystalStaticSpinner spinner) {
         if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
         return DynamicData.For(spinner).Get<CrystalColor>("color");
     }
-    private static object CSO_func2(CrystalStaticSpinner spinner) {
+    private static Color CSO_func2(CrystalStaticSpinner spinner) {
         if (spinner is DashToggleStaticSpinner) return getColor(((DashToggleStaticSpinner)spinner).Dashes);
         return Color.White;
     }
@@ -109,10 +109,6 @@ public class DashToggleHelperModule : EverestModule
 		cursor.Emit(OpCodes.Ldarg_0);
 		cursor.EmitDelegate(CSO_func2);
     }
-    private static object ASO_func1(CrystalStaticSpinner spinner) {
-        if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
-        return DynamicData.For(spinner).Get<CrystalColor>("color");
-    }
     private static void ASO_func2(CrystalStaticSpinner spinner, Image image) {
         if (spinner is DashToggleStaticSpinner) {
             image.Color = getColor((spinner as DashToggleStaticSpinner).Dashes);
@@ -123,7 +119,7 @@ public class DashToggleHelperModule : EverestModule
 
         cursor.GotoNext(MoveType.Before, instr => instr.MatchLdfld<CrystalStaticSpinner>("color"));
         cursor.Remove();
-        cursor.EmitDelegate(ASO_func1);
+        cursor.EmitDelegate(CSO_func1);
 
         cursor.GotoNext(MoveType.Before, instr => instr.MatchLdarg(0),
 			instr => instr.MatchLdfld<CrystalStaticSpinner>("filler"));
@@ -138,12 +134,9 @@ public class DashToggleHelperModule : EverestModule
 			((DashToggleStaticSpinner)self).CreateOffSprites();
 	}
 
-    private void CheckDashUpdate(On.Celeste.Level.orig_UpdateTime orig, Level self) {
-        Player entity = self.Tracker.GetEntity<Player>();
-        if (entity == null) {
-            lastDashes = -1;
-        }else if (entity.Dashes != lastDashes) {
-            lastDashes = entity.Dashes;
+    private void CheckDashUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+        if (self.Dashes != lastDashes) {
+            lastDashes = self.Dashes;
         }
         orig.Invoke(self);
     }
@@ -157,7 +150,7 @@ public class DashToggleHelperModule : EverestModule
 		IL.Celeste.CrystalStaticSpinner.AddSprite += AddSpriteOverride;
         On.Celeste.CrystalStaticSpinner.CreateSprites += CreateOffSprites;
 
-        On.Celeste.Level.UpdateTime += CheckDashUpdate;
+		On.Celeste.Player.Update += CheckDashUpdate;
 	}
 
     public override void Unload() {
@@ -169,6 +162,6 @@ public class DashToggleHelperModule : EverestModule
         IL.Celeste.CrystalStaticSpinner.AddSprite -= AddSpriteOverride;
         On.Celeste.CrystalStaticSpinner.CreateSprites -= CreateOffSprites;
 
-        On.Celeste.Level.UpdateTime -= CheckDashUpdate;
+        On.Celeste.Player.Update -= CheckDashUpdate;
     }
 }
