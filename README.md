@@ -1,4 +1,2 @@
 # DashToggleHelper
- Helper mod for Celeste
-
-https://github.com/kyfex-uwu/DashToggleHelper
+Replace with your mod's readme![README.md](../../DashToggleHelper/README.md)

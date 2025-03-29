@@ -1,5 +1,5 @@
-using Celeste.Mod;
+namespace Celeste.Mod.DashToggleHelper;
 
-public class DashToggleHelperModuleSession : EverestModuleSession
-{
+public class DashToggleHelperModuleSession : EverestModuleSession {
+
 }

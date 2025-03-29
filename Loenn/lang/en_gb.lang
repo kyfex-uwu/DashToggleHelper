@@ -1,21 +1,28 @@
 mods.DashToggleHelper.name=Dash Toggle Helper
 
 # Dash Toggle Block
-entities.DashToggleHelper/DashToggleBlock.placements.name.0dash=Dash Toggle Block (Blue, 0 Dashes)
-entities.DashToggleHelper/DashToggleBlock.placements.name.1dash=Dash Toggle Block (Red, 1 Dash)
-entities.DashToggleHelper/DashToggleBlock.placements.name.2dash=Dash Toggle Block (Pink, 2 Dashes)
-entities.DashToggleHelper/DashToggleBlock.placements.name.3dash=Dash Toggle Block (3 Dashes)
-entities.DashToggleHelper/DashToggleBlock.placements.name.4dash=Dash Toggle Block (4 Dashes)
-entities.DashToggleHelper/DashToggleBlock.placements.name.5dash=Dash Toggle Block (5 Dashes)
+entities.DashToggleHelper/DashToggleBlock.placements.name.0dash=Dash Toggle Block (0 Dashes, Blue)
+entities.DashToggleHelper/DashToggleBlock.placements.name.1dash=Dash Toggle Block (1 Dash, Red)
+entities.DashToggleHelper/DashToggleBlock.placements.name.2dash=Dash Toggle Block (2 Dashes, Pink)
+entities.DashToggleHelper/DashToggleBlock.placements.name.Ndash=Dash Toggle Block
+entities.DashToggleHelper/DashToggleBlock.placements.description.0dash=A block that is only collidable when Madeline has 0 dashes
+entities.DashToggleHelper/DashToggleBlock.placements.description.1dash=A block that is only collidable when Madeline has 1 dash
+entities.DashToggleHelper/DashToggleBlock.placements.description.2dash=A block that is only collidable when Madeline has 2 dashes
+entities.DashToggleHelper/DashToggleBlock.placements.description.Ndash=A block that is only collidable when Madeline has N dashes
 
 entities.DashToggleHelper/DashToggleBlock.attributes.description.dashes=How many dashes Madeline needs to collide with this block
+entities.DashToggleHelper/DashToggleBlock.attributes.description.prefix=The first part of the path to the graphics for this entity
 
 # Dash Toggle Static Spinner
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.0dash=Dash Toggle Static Spinner (Blue, 0 Dashes)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.1dash=Dash Toggle Static Spinner (Red, 1 Dash)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.2dash=Dash Toggle Static Spinner (Pink, 2 Dashes)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.3dash=Dash Toggle Static Spinner (3 Dashes)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.4dash=Dash Toggle Static Spinner (4 Dashes)
-entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.5dash=Dash Toggle Static Spinner (5 Dashes)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.0dash=Dash Toggle Static Spinner (0 Dashes, Blue)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.1dash=Dash Toggle Static Spinner (1 Dash, Red)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.2dash=Dash Toggle Static Spinner (2 Dashes, Pink)
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.name.Ndash=Dash Toggle Static Spinner
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.description.0dash=A spinner that only kills when Madeline has 0 dashes
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.description.1dash=A spinner that only kills when Madeline has 1 dash
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.description.2dash=A spinner that only kills when Madeline has 2 dashes
+entities.DashToggleHelper/DashToggleStaticSpinner.placements.description.Ndash=A spinner that only kills when Madeline has N dashes
 
 entities.DashToggleHelper/DashToggleStaticSpinner.attributes.description.dashes=How many dashes Madeline needs to collide with this spinner
+entities.DashToggleHelper/DashToggleStaticSpinner.attributes.description.prefix=The first part of the path to the graphics for this entity
+entities.DashToggleHelper/DashToggleStaticSpinner.attributes.description.attachToSolid=Whether this entity should attach itself to solids

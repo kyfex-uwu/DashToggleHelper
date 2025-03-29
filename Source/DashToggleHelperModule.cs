@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Celeste;
-using Celeste.Mod;
+﻿using System;
 using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
 using Monocle;
 using MonoMod.Cil;
 using MonoMod.Utils;
-using static System.Diagnostics.Activity;
 
+namespace Celeste.Mod.DashToggleHelper;
 public class DashToggleHelperModule : EverestModule
 {
 	public static int lastDashes = -1;
@@ -42,7 +37,7 @@ public class DashToggleHelperModule : EverestModule
 		return dashColors[color%dashColors.Length];
 	}
 
-    private void FindInGroupOverride(On.Celeste.CassetteBlock.orig_FindInGroup orig, CassetteBlock self, CassetteBlock block)
+    private static void FindInGroupOverride(On.Celeste.CassetteBlock.orig_FindInGroup orig, CassetteBlock self, CassetteBlock block)
 	{
 		if (self is DashToggleBlock)
 		{
@@ -55,7 +50,7 @@ public class DashToggleHelperModule : EverestModule
 		}
 	}
 
-	private bool CheckForSameOverride(On.Celeste.CassetteBlock.orig_CheckForSame orig, CassetteBlock self, float x, float y)
+	private static bool CheckForSameOverride(On.Celeste.CassetteBlock.orig_CheckForSame orig, CassetteBlock self, float x, float y)
 	{
 		if (self is DashToggleBlock)
 		{
@@ -65,7 +60,7 @@ public class DashToggleHelperModule : EverestModule
 		return orig.Invoke(self, x, y);
 	}
 
-	private void SetImageOverride(On.Celeste.CassetteBlock.orig_SetImage orig, CassetteBlock self, float x, float y, int tx, int ty)
+	private static void SetImageOverride(On.Celeste.CassetteBlock.orig_SetImage orig, CassetteBlock self, float x, float y, int tx, int ty)
 	{
 		if (self is DashToggleBlock)
 		{
@@ -78,7 +73,7 @@ public class DashToggleHelperModule : EverestModule
 		}
 	}
 
-	private void ShiftSizeOverride(On.Celeste.CassetteBlock.orig_ShiftSize orig, CassetteBlock self, int amt)
+	private static void ShiftSizeOverride(On.Celeste.CassetteBlock.orig_ShiftSize orig, CassetteBlock self, int amt)
 	{
 		if (self is DashToggleBlock)
 		{
@@ -107,7 +102,7 @@ public class DashToggleHelperModule : EverestModule
 			self.AddSprite(pos);
 		}
     }
-    private void CreateSpritesOverride(ILContext il) {
+    private static void CreateSpritesOverride(ILContext il) {
 		var cursor = new ILCursor(il);
 
 		cursor.GotoNext(MoveType.Before, instr => instr.MatchLdfld<CrystalStaticSpinner>("color"));
@@ -137,7 +132,7 @@ public class DashToggleHelperModule : EverestModule
             image.Color = getColor((spinner as DashToggleStaticSpinner).Dashes);
         }
     }
-    private void AddSpriteOverride(ILContext il) {
+    private static void AddSpriteOverride(ILContext il) {
         var cursor = new ILCursor(il);
 
         cursor.GotoNext(MoveType.Before, instr => instr.MatchLdfld<CrystalStaticSpinner>("color"));
@@ -150,17 +145,17 @@ public class DashToggleHelperModule : EverestModule
         cursor.EmitLdloc1();
         cursor.EmitDelegate(tintIfDTSpinner);
     }
-    private void CreateOffSprites(On.Celeste.CrystalStaticSpinner.orig_CreateSprites orig, CrystalStaticSpinner self) {
+    private static void CreateOffSprites(On.Celeste.CrystalStaticSpinner.orig_CreateSprites orig, CrystalStaticSpinner self) {
 		var expanded = self is DashToggleStaticSpinner ? DynamicData.For(self).Get<bool>("expanded") : true;
 		orig.Invoke(self);
 		if (!expanded)
 			((DashToggleStaticSpinner)self).CreateOffSprites();
 	}
 
-    private void CheckDashUpdate(On.Celeste.Player.orig_Update orig, Player self) {
-        if (self.Dashes != lastDashes) {
-            lastDashes = self.Dashes;
-        }
+    private static void CheckDashUpdate(On.Celeste.Player.orig_Update orig, Player self) {
+	    if (self.Dashes != lastDashes) {
+		    lastDashes = self.Dashes;
+	    }
         orig.Invoke(self);
     }
 

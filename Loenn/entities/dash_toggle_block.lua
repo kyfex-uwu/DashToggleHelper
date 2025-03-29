@@ -9,24 +9,37 @@ local dashToggleBlock = {
     minimumSize = {16,16},
     fieldInformation={
         dashes = {
-            options = DTLib.getDashProp()
-        }
+            fieldType="integer",
+            minimumValue=0,
+            maximumValue=DTLib.infDashes and math.huge or 2,
+        },
+        prefix={
+            default="objects/DashToggleHelper/dashtoggleblock/"
+        },
     },
-    placements={}
+    placements={},
+    associatedMods=DTLib.associatedMods,
 }
-for i=0,DTLib.maxDashes-1,1 do
+for i=0,2,1 do
     table.insert(dashToggleBlock.placements, {
         name = i.."dash",
         data = {
             dashes=i.."",
+            prefix="objects/DashToggleHelper/dashtoggleblock/",
             width = 16,
             height = 16
         }
     })
 end
-
-local texture = "objects/DashToggleHelper/dashtoggleblock/Active"
-
+table.insert(dashToggleBlock.placements, {
+    name = "Ndash",
+    data = {
+        dashes=3,
+        prefix="objects/DashToggleHelper/dashtoggleblock/",
+        width = 16,
+        height = 16
+    }
+})
 
 local function getSearchPredicate(entity)
     return function(target)
@@ -91,7 +104,7 @@ local function getTileSprite(entity, x, y, rectangles)
     end
 
     if quadX and quadY then
-        local sprite = drawableSprite.fromTexture(texture, entity)
+        local sprite = drawableSprite.fromTexture(entity.prefix.."Active", entity)
 
         sprite:addPosition(drawX, drawY)
         sprite:useRelativeQuad(quadX, quadY, 8, 8)

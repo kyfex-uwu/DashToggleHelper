@@ -1,28 +1,29 @@
-﻿using Celeste;
-using Celeste.Mod.Entities;
+﻿using Celeste.Mod.Entities;
 using Microsoft.Xna.Framework;
 using Monocle;
-using MonoMod.Utils;
 using System;
 using System.Collections.Generic;
 using Color = Microsoft.Xna.Framework.Color;
 using Image = Monocle.Image;
 
+namespace Celeste.Mod.DashToggleHelper;
+
 [Tracked(true), CustomEntity("DashToggleHelper/DashToggleStaticSpinner")]
 class DashToggleStaticSpinner : CrystalStaticSpinner {
     public readonly int Dashes;
-    private DynamicData parentData;
+    private readonly int ID;
+    private readonly string prefix;
 
-    public DashToggleStaticSpinner(Vector2 position, bool attachToSolid, int dashes, int id) :
+    public DashToggleStaticSpinner(Vector2 position, bool attachToSolid, int dashes, int id, string prefix) :
         base(position, attachToSolid, CrystalColor.Purple) {
         this.Dashes = dashes;
-        parentData = DynamicData.For(this);
-        parentData.Set("ID", id);
+        this.ID = id;
+        this.prefix = prefix;
     }
     public DashToggleStaticSpinner(EntityData data, Vector2 offset) :
-        this(data.Position + offset, data.Bool("attachToSolid"), data.Int("dashes"), data.ID) {}
-
-
+        this(data.Position + offset, data.Bool("attachToSolid"), 
+            data.Int("dashes"), data.ID, data.String("prefix","objects/DashToggleHelper/dashtogglestaticspinner/")) {}
+    
     public override void Awake(Scene scene) {
         base.Awake(scene);
         this.Collidable = false;
@@ -31,16 +32,14 @@ class DashToggleStaticSpinner : CrystalStaticSpinner {
     public override void Update() {
         base.Update();
 
-        var filler = parentData.Get<Entity>("filler");
-        var border = parentData.Get<Entity>("border");
         if (DashToggleHelperModule.lastDashes != this.Dashes) {
             this.Collidable = false;
             this.Depth = 8900;
-            if (filler != null) {
-                filler.Depth = 8901;
+            if (this.filler != null) {
+                this.filler.Depth = 8901;
             }
-            if (border != null) {
-                border.Depth = 8902;
+            if (this.border != null) {
+                this.border.Depth = 8902;
             }
 
             foreach(Image i in this.offImages) {
@@ -51,97 +50,94 @@ class DashToggleStaticSpinner : CrystalStaticSpinner {
             }
         } else {
             this.Depth = -8500;
-            if (filler != null) {
-                filler.Depth = -8499;
+            if (this.filler != null) {
+                this.filler.Depth = -8499;
             }
-            if (border != null) {
-                border.Depth = -8498;
+            if (this.border != null) {
+                this.border.Depth = -8498;
             }
-            foreach (Image i in this.offImages) {
+            foreach (var i in this.offImages) {
                 i.Visible = false;
             }
-            foreach (Image i in this.onImages) {
+            foreach (var i in this.onImages) {
                 i.Visible = true;
             }
         }
     }
 
-    private List<Image> onImages = new List<Image>();
-    private List<Image> offImages = new List<Image>();
+    private List<Image> onImages = new();
+    private List<Image> offImages = new();
     public void CreateOffSprites() {
         foreach (DashToggleStaticSpinner entity in base.Scene.Tracker.GetEntities<DashToggleStaticSpinner>()) {
-            var data = DynamicData.For(entity);
             if (entity.Dashes == this.Dashes &&
-                    data.Get<int>("ID") > parentData.Get<int>("ID") &&
+                    entity.ID > this.ID &&
                     entity.AttachToSolid == AttachToSolid &&
-                    (entity.Position - Position).LengthSquared() < 576f) {
-                parentData.Invoke("AddSprite", (Position + entity.Position) / 2f - Position);
+                    (entity.Position - Position).LengthSquared() < 576f) { 
+                        this.AddSprite((Position + entity.Position) / 2f - Position);
             }
         }
-        DynamicData.For(parentData.Get<Entity>("border")).Get<Entity[]>("drawing")[1] = parentData.Get<Entity>("filler");
+
+        this.border.drawing[1] = this.filler;
 
         foreach (Component c in this.Components) {
             if (!(c is Image)) continue;
             this.onImages.Add(c as Image);
         }
-        var filler = parentData.Get<Entity>("filler");
-        if (filler != null) {
-            foreach (Component c in filler) {
+        if (this.filler != null) {
+            foreach (Component c in this.filler) {
                 if (!(c is Image)) continue;
                 (c as Image).Color = DashToggleHelperModule.getColor(this.Dashes);
                 this.onImages.Add(c as Image);
             }
         }
 
-        Calc.PushRandom(parentData.Get<int>("randomSeed"));
-        List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures("objects/DashToggleHelper/dashtogglestaticspinner/fg");
+        Calc.PushRandom(this.randomSeed);
+        List<MTexture> atlasSubtextures = GFX.Game.GetAtlasSubtextures(this.prefix+"fg");
         MTexture mTexture = Calc.Random.Choose(atlasSubtextures);
-        Color color = DashToggleHelperModule.getColor(this.Dashes);
+        Color newColor = DashToggleHelperModule.getColor(this.Dashes);
 
-        if (!parentData.Invoke<bool>("SolidCheck", new Vector2(base.X - 4f, base.Y - 4f))) {
-            var toAdd = new Image(mTexture.GetSubtexture(0, 0, 14, 14)).SetOrigin(12f, 12f).SetColor(color);
+        if (!this.SolidCheck( new Vector2(base.X - 4f, base.Y - 4f))) {
+            var toAdd = new Image(mTexture.GetSubtexture(0, 0, 14, 14)).SetOrigin(12f, 12f).SetColor(newColor);
             offImages.Add(toAdd);
             Add(toAdd);
         }
 
-        if (!parentData.Invoke<bool>("SolidCheck", new Vector2(base.X + 4f, base.Y - 4f))) {
-            var toAdd=new Image(mTexture.GetSubtexture(10, 0, 14, 14)).SetOrigin(2f, 12f).SetColor(color);
+        if (!this.SolidCheck(new Vector2(base.X + 4f, base.Y - 4f))) {
+            var toAdd=new Image(mTexture.GetSubtexture(10, 0, 14, 14)).SetOrigin(2f, 12f).SetColor(newColor);
             offImages.Add(toAdd);
             Add(toAdd);
         }
 
-        if (!parentData.Invoke<bool>("SolidCheck", new Vector2(base.X + 4f, base.Y + 4f))) {
-            var toAdd=new Image(mTexture.GetSubtexture(10, 10, 14, 14)).SetOrigin(2f, 2f).SetColor(color);
+        if (!this.SolidCheck(new Vector2(base.X + 4f, base.Y + 4f))) {
+            var toAdd=new Image(mTexture.GetSubtexture(10, 10, 14, 14)).SetOrigin(2f, 2f).SetColor(newColor);
             offImages.Add(toAdd);
             Add(toAdd);
         }
 
-        if (!parentData.Invoke<bool>("SolidCheck", new Vector2(base.X - 4f, base.Y + 4f))) {
-            var toAdd=new Image(mTexture.GetSubtexture(0, 10, 14, 14)).SetOrigin(12f, 2f).SetColor(color);
+        if (!this.SolidCheck(new Vector2(base.X - 4f, base.Y + 4f))) {
+            var toAdd=new Image(mTexture.GetSubtexture(0, 10, 14, 14)).SetOrigin(12f, 2f).SetColor(newColor);
             offImages.Add(toAdd);
             Add(toAdd);
         }
 
         foreach (DashToggleStaticSpinner entity in base.Scene.Tracker.GetEntities<DashToggleStaticSpinner>()) {
             if (entity.Dashes==this.Dashes &&
-                    entity.parentData.Get<int>("ID") > parentData.Get<int>("ID") && 
+                    entity.ID>this.ID && 
                     entity.AttachToSolid == AttachToSolid && 
                     (entity.Position - Position).LengthSquared() < 576f) {
-                var filler2 = parentData.Get<Entity>("filler");
-                if (filler2 == null) {
-                    filler2 = new Entity(Position);
-                    parentData.Set("filler", filler2);
-                    base.Scene.Add(filler2);
-                    filler2.Depth = base.Depth + 1;
+                if (this.filler == null) {
+                    this.filler = new Entity(Position);
+                    base.Scene.Add(this.filler);
+                    this.filler.Depth = base.Depth + 1;
                 }
 
-                List<MTexture> atlasSubtextures2 = GFX.Game.GetAtlasSubtextures("objects/DashToggleHelper/dashtogglestaticspinner/bg");
-                var offset = (Position + entity.Position) / 2f - Position;
+                List<MTexture> atlasSubtextures2 = GFX.Game.GetAtlasSubtextures(this.prefix+"bg");
+                var newOffs = (Position + entity.Position) / 2f - Position;
                 Image image = new Image(Calc.Random.Choose(atlasSubtextures2));
-                image.Position = offset;
-                image.Rotation = (float)Calc.Random.Choose(0, 1, 2, 3) * ((float)Math.PI / 2f);
+                image.Position = newOffs;
+                image.Rotation = Calc.Random.Choose(0, 1, 2, 3) * ((float)Math.PI / 2f);
                 image.CenterOrigin();
-                image.SetColor(color);
+                image.SetColor(newColor);
                 this.offImages.Add(image);
 
                 filler.Add(image);

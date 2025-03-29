@@ -7,25 +7,38 @@ local spinner = {
     name="DashToggleHelper/DashToggleStaticSpinner",
     fieldInformation = {
         dashes = {
-            options = DTLib.getDashProp()
-        }
+            fieldType="integer",
+            minimumValue=0,
+            maximumValue=DTLib.infDashes and math.huge or 2,
+        },
+        prefix={
+            default="objects/DashToggleHelper/dashtoggleblock/"
+        },
     },
-    placements = {}
+    placements = {},
+    associatedMods=DTLib.associatedMods,
 }
-for i=0,DTLib.maxDashes-1,1 do
+for i=0,2,1 do
     table.insert(spinner.placements, {
         name = i.."dash",
         data = {
             dashes=i.."",
-            attachToSolid = false
+            attachToSolid = false,
+            prefix="objects/DashToggleHelper/dashtogglestaticspinner/",
         }
     })
 end
+table.insert(spinner.placements, {
+    name = "Ndash",
+    data = {
+        dashes=3,
+        attachToSolid = false,
+        prefix="objects/DashToggleHelper/dashtogglestaticspinner/",
+    }
+})
 
 local function getSpinnerTexture(entity, foreground)
-    local prefix = foreground and "fg" or "bg"
-
-    return "objects/DashToggleHelper/dashtogglestaticspinner/"..prefix.."00"
+    return entity.prefix..(foreground and "fg" or "bg").."00"
 end
 
 local function getSpinnerSprite(entity, foreground)
@@ -50,7 +63,8 @@ local function getConnectionSprites(room, entity)
                 local connectorData = {
                     x = math.floor((entity.x + target.x) / 2),
                     y = math.floor((entity.y + target.y) / 2),
-                    dashes = entity.dashes
+                    dashes = entity.dashes,
+                    prefix = entity.prefix,
                 }
                 local sprite = getSpinnerSprite(connectorData, false)
 
