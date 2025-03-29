@@ -1,6 +1,10 @@
 - Name: DashToggleHelper
-  Version: 0.1.0
+  Version: 1.0.0
   DLL: bin/DashToggleHelper.dll
   Dependencies:
     - Name: EverestCore
       Version: 1.5421.0
+  OptionalDependencies:
+    - Name: MoreDasheline
+      Version: 1.7.1
+  

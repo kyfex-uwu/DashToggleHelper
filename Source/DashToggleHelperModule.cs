@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Monocle;
 using MonoMod.Cil;
@@ -18,23 +20,28 @@ public class DashToggleHelperModule : EverestModule
 	public override Type SessionType => typeof(DashToggleHelperModuleSession);
 
 	public static DashToggleHelperModuleSession Session => (DashToggleHelperModuleSession)Instance._Session;
-
+	private static bool moreDashelineLoaded;
 	public DashToggleHelperModule()
 	{
 		Instance = this;
 		//Logger.SetLogLevel("DashToggleBlockModule", LogLevel.Verbose);
+		
+		EverestModuleMetadata moreDasheline = new() {
+			Name = "MoreDasheline",
+			Version = new Version(1, 7 ,1)
+		};
+		moreDashelineLoaded = Everest.Loader.DependencyLoaded(moreDasheline);
 	}
 
-    private static Color[] dashColors = new Color[]{
-        Calc.HexToColor("44B7FF"),
-        Calc.HexToColor("f03232"),
-        Calc.HexToColor("ff6def"),
-        Calc.HexToColor("008000"),
-        Calc.HexToColor("ffff00"),
-        Calc.HexToColor("ff00ff")
-    };
+	public static readonly Dictionary<int, Color> dashColors = new();
+	static DashToggleHelperModule() {
+		dashColors.Add(0,Player.UsedHairColor);
+		dashColors.Add(1,Player.NormalHairColor);
+		dashColors.Add(2,Player.TwoDashesHairColor);
+	}
 	public static Color getColor(int color) {
-		return dashColors[color%dashColors.Length];
+		if (moreDashelineLoaded) return MoreDashelineIntegration.getColor(color);
+		return dashColors.ContainsKey(color) ? dashColors[color] : Color.White;
 	}
 
     private static void FindInGroupOverride(On.Celeste.CassetteBlock.orig_FindInGroup orig, CassetteBlock self, CassetteBlock block)

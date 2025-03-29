@@ -25,6 +25,7 @@
     <ItemGroup>
         <PackageReference Include="CelesteMod.Publicizer" Version="*" CelesteAssembly="$(CelestePrefix)\Celeste.dll" />
         <Reference Include="$(CelestePrefix)\MMHOOK_Celeste.dll" Private="false" />
+        <Reference Include="deps/MoreDasheline.dll" Private="false" />
         <Reference Include="$(CelestePrefix)\FNA.dll" Private="false" />
     </ItemGroup>
 
