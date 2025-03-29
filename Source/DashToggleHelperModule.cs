@@ -82,7 +82,7 @@ public class DashToggleHelperModule : EverestModule {
 
     private static CrystalColor DTSpinnerImage(CrystalStaticSpinner spinner) {
         if (spinner is DashToggleStaticSpinner) return CrystalColor.Rainbow;
-        return DynamicData.For(spinner).Get<CrystalColor>("color");
+        return spinner.color;
     }
 
     private static Color DTSpinnerColor(CrystalStaticSpinner spinner) {
@@ -147,7 +147,7 @@ public class DashToggleHelperModule : EverestModule {
 
     private static void CreateOffSprites(On.Celeste.CrystalStaticSpinner.orig_CreateSprites orig,
         CrystalStaticSpinner self) {
-        var expanded = self is DashToggleStaticSpinner ? DynamicData.For(self).Get<bool>("expanded") : true;
+        var expanded = self is DashToggleStaticSpinner ? self.expanded : true;
         orig.Invoke(self);
         if (!expanded)
             ((DashToggleStaticSpinner)self).CreateOffSprites();
