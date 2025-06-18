@@ -13,12 +13,10 @@ local dashToggleBlock = {
             minimumValue=0,
             maximumValue=DTLib.infDashes and math.huge or 2,
         },
-        prefix={
-            default="objects/DashToggleHelper/dashtoggleblock/"
-        },
+        prefix={ default="objects/DashToggleHelper/dashtoggleblock/" },
     },
     placements={},
-    associatedMods=DTLib.associatedMods,
+    associatedMods=DTLib.associatedMods
 }
 for i=0,2,1 do
     table.insert(dashToggleBlock.placements, {
