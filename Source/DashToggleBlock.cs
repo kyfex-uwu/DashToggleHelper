@@ -4,7 +4,7 @@ using Monocle;
 
 namespace Celeste.Mod.DashToggleHelper;
 
-[Tracked(true)]
+[Tracked]
 [CustomEntity("DashToggleHelper/DashToggleBlock")]
 internal class DashToggleBlock : CassetteBlock {
     private readonly string prefix;
@@ -40,15 +40,14 @@ internal class DashToggleBlock : CassetteBlock {
     }
 
     public void FindInGroupOverride(CassetteBlock block) {
-        foreach (var maybe in Scene.Tracker.GetEntities<DashToggleBlock>()) {
-            if (maybe is DashToggleBlock entity) {
-                if (entity != this && entity != block && entity.Index == Index && !group.Contains(entity) &&
-                    (entity.CollideRect(new Rectangle((int)block.X - 1, (int)block.Y, (int)block.Width + 2,
-                        (int)block.Height)) || entity.CollideRect(new Rectangle((int)block.X, (int)block.Y - 1,
-                        (int)block.Width, (int)block.Height + 2)))) {
-                    FindInGroupOverride(entity);
-                    group.Add(entity);
-                }
+        foreach (DashToggleBlock entity in Scene.Tracker.GetEntities<DashToggleBlock>()) {
+            if (entity != this && entity != block && entity.Index == Index &&
+                (entity.CollideRect(new Rectangle((int)block.X - 1, (int)block.Y, (int)block.Width + 2,
+                    (int)block.Height)) || entity.CollideRect(new Rectangle((int)block.X, (int)block.Y - 1,
+                    (int)block.Width, (int)block.Height + 2))) && !group.Contains(entity)) {
+                group.Add(entity);
+                FindInGroupOverride(entity);
+                entity.group = this.group;
             }
         }
     }
