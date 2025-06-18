@@ -93,18 +93,18 @@ public class DashToggleHelperModule : EverestModule {
         cursor.EmitLdarg0();
         cursor.EmitDelegate(DTSpinnerColor);
         
-        // ILLabel dest = null;
-        // cursor.GotoNext(MoveType.After, instr => {
-        //     var toReturn = instr.MatchBgeUn(out var maybeDest);
-        //     if (maybeDest != null) dest = maybeDest;
-        //     return toReturn;
-        // });
-        //
-        // cursor.EmitLdloc(4);
-        // cursor.EmitDelegate(isDTSpinner);
-        // cursor.EmitLdarg0();
-        // cursor.EmitDelegate(isDTSpinner);
-        // cursor.EmitBneUn(dest);
+        ILLabel dest = null;
+        cursor.GotoNext(MoveType.After, instr => {
+            var toReturn = instr.MatchBgeUn(out var maybeDest);
+            if (maybeDest != null) dest = maybeDest;
+            return toReturn;
+        });
+        
+        cursor.EmitLdloc(4);
+        cursor.EmitDelegate(isDTSpinner);
+        cursor.EmitLdarg0();
+        cursor.EmitDelegate(isDTSpinner);
+        cursor.EmitBneUn(dest);
     }
 
     private static void tintIfDTSpinner(CrystalStaticSpinner spinner, Image image) {
@@ -128,8 +128,7 @@ public class DashToggleHelperModule : EverestModule {
     private static void CreateOffSprites(On.Celeste.CrystalStaticSpinner.orig_CreateSprites orig,
         CrystalStaticSpinner self) {
         orig(self);
-        if (self is DashToggleStaticSpinner dtSpinner && !dtSpinner.expanded)
-            dtSpinner.CreateOffSprites();
+        if (self is DashToggleStaticSpinner dtSpinner) dtSpinner.CreateOffSprites();
     }
 
     private static void CheckDashUpdate(On.Celeste.Player.orig_Update orig, Player self) {
@@ -142,9 +141,9 @@ public class DashToggleHelperModule : EverestModule {
         On.Celeste.CassetteBlock.CheckForSame += CheckForSameOverride;
         On.Celeste.CassetteBlock.SetImage += SetImageOverride;
         On.Celeste.CassetteBlock.ShiftSize += ShiftSizeOverride;
-        // IL.Celeste.CrystalStaticSpinner.CreateSprites += CreateSpritesOverride;
-        // IL.Celeste.CrystalStaticSpinner.AddSprite += AddSpriteOverride;
-        // On.Celeste.CrystalStaticSpinner.CreateSprites += CreateOffSprites;
+        IL.Celeste.CrystalStaticSpinner.CreateSprites += CreateSpritesOverride;
+        IL.Celeste.CrystalStaticSpinner.AddSprite += AddSpriteOverride;
+        On.Celeste.CrystalStaticSpinner.CreateSprites += CreateOffSprites;
 
         On.Celeste.Player.Update += CheckDashUpdate;
     }

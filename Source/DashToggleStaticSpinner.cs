@@ -7,7 +7,7 @@ using Image = Monocle.Image;
 
 namespace Celeste.Mod.DashToggleHelper;
 
-[Tracked(true)]
+[Tracked]
 [CustomEntity("DashToggleHelper/DashToggleStaticSpinner")]
 internal class DashToggleStaticSpinner : CrystalStaticSpinner {
     public readonly int Dashes;
@@ -54,7 +54,12 @@ internal class DashToggleStaticSpinner : CrystalStaticSpinner {
         }
     }
 
+    private bool expanded2 = false;
     public void CreateOffSprites() {
+        if (this.expanded2)
+            return;
+        this.expanded2 = true;
+        
         foreach (var maybe in Scene.Tracker.GetEntities<DashToggleStaticSpinner>())
             if (maybe is DashToggleStaticSpinner entity)
                 if (entity.Dashes == Dashes &&
